@@ -1,0 +1,24 @@
+!!! 5
+html
+	head
+		title= "List of '" + path + "'"
+	
+	body
+		table
+			thead
+				tr
+					each h in ["Name", "Type", "Size"]
+						th= h
+			tbody
+				tr
+					td
+						a(href="../") .. (parent)
+					td Folder
+					td 0
+					
+				each f in files
+					tr
+						td
+							a(href= f.getName() + ((f.isFile()) ? "" : "/"))= f.getName() + ((f.isFile()) ? "" : "/")
+						td= (f.isFile()) ? "File" : "Folder"
+						td= f.length()
