@@ -22,6 +22,10 @@ public static void main(String... args) {
 The project can be downloaded as compiled .jar with all dependencies
 from <https://github.com/lukasdietrich/lambdatra/releases>!
 
+## How it works (UML)
+
+![](https://raw.githubusercontent.com/lukasdietrich/lambdatra/master/classes.png)
+
 ## License
 
 ```plain
