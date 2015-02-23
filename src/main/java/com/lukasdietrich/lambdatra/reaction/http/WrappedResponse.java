@@ -1,6 +1,5 @@
 package com.lukasdietrich.lambdatra.reaction.http;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -56,7 +55,7 @@ public final class WrappedResponse extends OutputStream {
 	 * @param mime
 	 */
 	public void setMime(String mime) {
-		setHeader(CONTENT_TYPE, mime);
+		setHeader(Names.CONTENT_TYPE, mime);
 	}
 	
 	/**
