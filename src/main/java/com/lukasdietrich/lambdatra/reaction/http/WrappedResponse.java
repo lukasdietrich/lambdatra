@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ import de.neuland.jade4j.Jade4J;
  * @author Lukas Dietrich
  *
  */
-public class WrappedResponse {
+public final class WrappedResponse extends OutputStream {
 
 	private FullHttpResponse res;
 	
@@ -73,7 +74,7 @@ public class WrappedResponse {
 	 * 
 	 * @return
 	 */
-	public ByteBuf getBuffer() {
+	protected ByteBuf getBuffer() {
 		return res.content();
 	}
 	
@@ -86,7 +87,31 @@ public class WrappedResponse {
 	 * @throws IOException
 	 */
 	public void render(URL template, Map<String, Object> partials) throws IOException {
-		ByteBufUtil.writeUtf8(getBuffer(), Jade4J.render(template, partials));
+		write(Jade4J.render(template, partials));
+	}
+
+	/**
+	 * Writes text to the {@link ByteBuf}.
+	 * 
+	 * @param text
+	 */
+	public void write(String text) {
+		ByteBufUtil.writeUtf8(getBuffer(), text);
+	}
+	
+	@Override
+	public void write(int b) throws IOException {
+		getBuffer().writeByte(b);
+	}
+
+	@Override
+	public void write(byte[] b, int off, int len) throws IOException {
+		getBuffer().writeBytes(b, off, len);
+	}
+
+	@Override
+	public void write(byte[] b) throws IOException {
+		getBuffer().writeBytes(b);
 	}
 	
 }

@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author Lukas Dietrich
  *
  */
-public class WrappedRequest {
+public final class WrappedRequest {
 
 	private static final String ENCODING = "UTF-8";
 	
