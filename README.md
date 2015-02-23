@@ -17,6 +17,11 @@ public static void main(String... args) {
 }
 ```
 
+## Download
+
+The project can be downloaded as compiled .jar with all dependencies
+from <https://github.com/lukasdietrich/lambdatra/releases>!
+
 ## License
 
 ```plain
