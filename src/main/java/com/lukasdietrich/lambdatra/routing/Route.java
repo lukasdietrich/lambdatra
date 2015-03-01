@@ -10,7 +10,7 @@ import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
  * 
  * @author Lukas Dietrich
  *
- * @param <E>
+ * @param <E> class of {@link CallbackAdapter} implementation
  */
 public class Route<E extends CallbackAdapter<?>> {
 	
@@ -21,8 +21,8 @@ public class Route<E extends CallbackAdapter<?>> {
 	 * Creates a {@link Route} that holds both, 
 	 * a {@link CallbackAdapter} and a {@link RoutePattern}.
 	 * 
-	 * @param pattern
-	 * @param cb
+	 * @param pattern url pattern to match requests against
+	 * @param cb a {@link CallbackAdapter} to handle requests on match
 	 */
 	public Route(String pattern, E cb) {
 		this.pattern = new RoutePattern(pattern);
@@ -33,8 +33,8 @@ public class Route<E extends CallbackAdapter<?>> {
 	 * Exposes {@link RoutePattern#match(String)}.
 	 * 
 	 * @see RoutePattern#match(String)
-	 * @param path
-	 * @return
+	 * @param path requested path
+	 * @return an {@link Optional} of parameters or an empty {@link Optional}
 	 */
 	public Optional<Map<String, String>> match(String path) {
 		return pattern.match(path);
@@ -43,7 +43,7 @@ public class Route<E extends CallbackAdapter<?>> {
 	/**
 	 * Returns the {@link CallbackAdapter}
 	 * 
-	 * @return
+	 * @return the underlying callback
 	 */
 	public E getCallback() {
 		return this.cb;

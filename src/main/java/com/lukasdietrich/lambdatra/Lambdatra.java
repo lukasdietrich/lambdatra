@@ -4,7 +4,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import java.util.function.Consumer;
 
 import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
@@ -33,9 +32,8 @@ public class Lambdatra {
 	 * Eg.:
 	 * {@link Lambdatra}.{@link #create(int, Consumer)}
 	 * 
-	 * @param port
-	 * @param context
-	 * @throws InterruptedException
+	 * @param port port to listen for connections
+	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
 	 */
 	public static void create(int port, Consumer<Lambdatra> context) {
 		Lambdatra instance = new Lambdatra();
@@ -93,6 +91,7 @@ public class Lambdatra {
 	 * the given class is created to represent the network
 	 * entity.
 	 * 
+	 * @param <E> generic type of sockClass
 	 * @param pattern url pattern to bind this handler to
 	 * @param sockClass {@link WebSocket} implementation class
 	 * @param cb {@link WSCallback}, that is called on incoming connections

@@ -25,7 +25,7 @@ public class RoutePattern {
 	/**
 	 * Creates a {@link RoutePattern} by its {@link String} representation.
 	 * 
-	 * @param simple
+	 * @param simple pattern as a {@link String}
 	 */
 	public RoutePattern(String simple) {
 		this.names = new Vector<>();
@@ -55,8 +55,8 @@ public class RoutePattern {
 	 * Returns an Optional indicating, if the route matched and contains
 	 * a {@link Map} of parameters, if it does.
 	 * 
-	 * @param path
-	 * @return
+	 * @param path requested path
+	 * @return an {@link Optional} of parameters or an empty {@link Optional}
 	 */
 	public Optional<Map<String, String>> match(String path) {
 		Matcher m = regex.matcher(path);

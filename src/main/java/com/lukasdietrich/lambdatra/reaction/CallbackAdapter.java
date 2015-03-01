@@ -13,7 +13,7 @@ import com.lukasdietrich.lambdatra.NettyHandler;
  * 
  * @author Lukas Dietrich
  *
- * @param <E>
+ * @param <E> class of callback to be handled
  */
 public abstract class CallbackAdapter<E> {
 	

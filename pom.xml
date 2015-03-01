@@ -5,18 +5,12 @@
 
 	<groupId>com.lukasdietrich</groupId>
 	<artifactId>lambdatra</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>Lambdatra</name>
 	<url>http://maven.apache.org</url>
 	<description>Callback oriented http and websocket server based on netty.io</description>
-
-	<licenses>
-		<license>
-
-		</license>
-	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
