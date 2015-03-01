@@ -25,7 +25,7 @@ public abstract class WebSocket {
 	/**
 	 * Send a message to the connected endpoint.
 	 * 
-	 * @param msg
+	 * @param msg message to be sent
 	 */
 	public final void sendMessage(String msg) {
 		this.ch.writeAndFlush(new TextWebSocketFrame(msg));
@@ -35,7 +35,7 @@ public abstract class WebSocket {
 	 * Sets the {@link Channel} this {@link WebSocket} 
 	 * write on.
 	 * 
-	 * @param ch
+	 * @param ch {@link Channel} to handle io
 	 */
 	protected final void setChannel(Channel ch) {
 		this.ch = ch;
@@ -51,7 +51,7 @@ public abstract class WebSocket {
 	/**
 	 * Returns the {@link WebSocket}s generated ID.
 	 * 
-	 * @return
+	 * @return id as a {@link Long}
 	 */
 	public final long getId() {
 		return ID;
@@ -64,7 +64,7 @@ public abstract class WebSocket {
 	 * <br>
 	 * <i>{@link Long#toString}({@link #getId()}, 16)</i>.
 	 * 
-	 * @return
+	 * @return id as a {@link String}
 	 */
 	public final String getIdHex() {
 		return Long.toString(ID, 16);

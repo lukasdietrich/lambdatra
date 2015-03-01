@@ -33,8 +33,8 @@ public final class WrappedResponse extends OutputStream {
 	/**
 	 * Sets an arbitrary header
 	 * 
-	 * @param key
-	 * @param value
+	 * @param key header name
+	 * @param value header value
 	 */
 	public void setHeader(String key, String value) {
 		res.headers().set(key.toString(), value);
@@ -43,7 +43,7 @@ public final class WrappedResponse extends OutputStream {
 	/**
 	 * Sets headers for {@link HttpResponseStatus}
 	 * 
-	 * @param status
+	 * @param status header statuscode
 	 */
 	public void setStatus(HttpResponseStatus status) {
 		res.setStatus(status);
@@ -52,7 +52,7 @@ public final class WrappedResponse extends OutputStream {
 	/**
 	 * Sets headers for mime type
 	 * 
-	 * @param mime
+	 * @param mime content type
 	 */
 	public void setMime(String mime) {
 		setHeader(Names.CONTENT_TYPE, mime);
@@ -62,7 +62,7 @@ public final class WrappedResponse extends OutputStream {
 	 * Sets headers for cache-control with the given 
 	 * expiration date in seconds.
 	 * 
-	 * @param expires
+	 * @param expires expiration in seconds
 	 */
 	public void enableCache(long expires) {
 		setHeader(Names.CACHE_CONTROL, String.format("max-age=%d", expires));
@@ -71,7 +71,7 @@ public final class WrappedResponse extends OutputStream {
 	/**
 	 * Returns a {@link ByteBuf} to write output to.
 	 * 
-	 * @return
+	 * @return response buffer
 	 */
 	protected ByteBuf getBuffer() {
 		return res.content();
@@ -81,9 +81,9 @@ public final class WrappedResponse extends OutputStream {
 	 * Renders a Jade Template (via {@link Jade4J}) and outputs
 	 * it to the {@link ByteBuf}.
 	 * 
-	 * @param template
-	 * @param partials
-	 * @throws IOException
+	 * @param template path of template to be rendered
+	 * @param partials render partials
+	 * @throws IOException may throw an exception on io failure
 	 */
 	public void render(URL template, Map<String, Object> partials) throws IOException {
 		write(Jade4J.render(template, partials));
@@ -92,7 +92,7 @@ public final class WrappedResponse extends OutputStream {
 	/**
 	 * Writes text to the {@link ByteBuf}.
 	 * 
-	 * @param text
+	 * @param text utf8 encoded text to be written
 	 */
 	public void write(String text) {
 		ByteBufUtil.writeUtf8(getBuffer(), text);

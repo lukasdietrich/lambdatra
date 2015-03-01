@@ -14,8 +14,8 @@ public interface WSCallback<E extends WebSocket> {
 	/**
 	 * Called on established and handshaken WebSocket-connection
 	 * 
-	 * @param socket the WebSocket connected
-	 * @throws IOException
+	 * @param socket the {@link WebSocket} connected
+	 * @throws IOException may throw an exception on write failure
 	 */
 	public void call(E socket) throws IOException;
 	

@@ -26,7 +26,7 @@ import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
  * 
  * @author Lukas Dietrich
  *
- * @param <E>
+ * @param <E> class of {@link WebSocket} implementation
  */
 public class WsAdapter<E extends WebSocket> extends CallbackAdapter<WSCallback<E>> {
 	

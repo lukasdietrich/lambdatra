@@ -43,7 +43,7 @@ public class StaticCallback implements HttpCallback {
 	 * Shorthand for {@link #StaticCallback(File, boolean, long)}
 	 * <br>
 	 * with <code>dirListing = false</code>, <code>maxAge = 0</code>
-	 * @param source
+	 * @param source path of static folder
 	 */
 	public StaticCallback(File source) {
 		this(source, false, 0);
@@ -53,8 +53,9 @@ public class StaticCallback implements HttpCallback {
 	 * Shorthand for {@link #StaticCallback(File, boolean, long)}
 	 * <br>
 	 * with <code>maxAge = 0</code>
-	 * @param source
-	 * @param dirListing
+	 * 
+	 * @param source the root directory
+	 * @param dirListing whether or not directory contents should be listed
 	 */
 	public StaticCallback(File source, boolean dirListing) {
 		this(source, dirListing, 0);
@@ -64,8 +65,9 @@ public class StaticCallback implements HttpCallback {
 	 * Shorthand for {@link #StaticCallback(File, boolean, long)}
 	 * <br>
 	 * with <code>dirListing = false</code>
-	 * @param source
-	 * @param dirListing
+	 * 
+	 * @param source the root directory
+	 * @param maxAge 0 for no caching, or the number of seconds for a file to expire
 	 */
 	public StaticCallback(File source, long maxAge) {
 		this(source, false, maxAge);

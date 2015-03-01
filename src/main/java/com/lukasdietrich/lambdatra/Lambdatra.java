@@ -11,6 +11,7 @@ import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpCallback;
 import com.lukasdietrich.lambdatra.reaction.http.StaticCallback;
+import com.lukasdietrich.lambdatra.reaction.http.WrappedRequest;
 import com.lukasdietrich.lambdatra.reaction.websocket.WSCallback;
 import com.lukasdietrich.lambdatra.reaction.websocket.WebSocket;
 import com.lukasdietrich.lambdatra.reaction.websocket.WsAdapter;
@@ -78,8 +79,8 @@ public class Lambdatra {
 	 * Shorthand for {@link #onWebSocket(String, Class, WSCallback)}
 	 * with empty callback.
 	 * 
-	 * @param pattern
-	 * @param sockClass
+	 * @param pattern url pattern to bind this handler to
+	 * @param sockClass {@link WebSocket} implementation class
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra onWebSocket(String pattern, Class<? extends WebSocket> sockClass) {
@@ -92,9 +93,9 @@ public class Lambdatra {
 	 * the given class is created to represent the network
 	 * entity.
 	 * 
-	 * @param pattern
-	 * @param sockClass
-	 * @param cb
+	 * @param pattern url pattern to bind this handler to
+	 * @param sockClass {@link WebSocket} implementation class
+	 * @param cb {@link WSCallback}, that is called on incoming connections
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public <E extends WebSocket> Lambdatra onWebSocket(String pattern, Class<E> sockClass, WSCallback<E> cb) {
@@ -115,8 +116,8 @@ public class Lambdatra {
 	 * {@link StaticCallback} is an implementation of {@link HttpCallback}
 	 * for simple file servers.
 	 * 
-	 * @param pattern
-	 * @param cb
+	 * @param pattern url pattern to bind this handler to
+	 * @param cb {@link HttpCallback}, that has to respond to a {@link WrappedRequest}
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra on(String pattern, HttpCallback cb) {

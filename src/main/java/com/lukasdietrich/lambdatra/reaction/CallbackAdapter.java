@@ -34,11 +34,11 @@ public abstract class CallbackAdapter<E> {
 	/**
 	 * Process arbitrary request data to call the underlying callback.
 	 * 
-	 * @param handler
-	 * @param ctx
-	 * @param req
-	 * @param params
-	 * @throws IOException
+	 * @param handler {@link NettyHandler} middleware instance
+	 * @param ctx {@link ChannelHandlerContext} to handle io with
+	 * @param req a {@link FullHttpRequest} that represents an incoming request
+	 * @param params mapped data of url parameters
+	 * @throws IOException may throw an exception on write failure
 	 */
 	public abstract void call(NettyHandler handler, ChannelHandlerContext ctx, FullHttpRequest req, Map<String, String> params) throws IOException;
 	

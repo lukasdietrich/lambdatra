@@ -55,8 +55,9 @@ public final class WrappedRequest {
 	
 	/**
 	 * Returns an {@link Optional} of a header by key
-	 * @param key
-	 * @return
+	 * 
+	 * @param key header name
+	 * @return header value
 	 */
 	public Optional<String> getHeader(String key) {
 		return Optional.ofNullable(req.headers().get(key));
@@ -64,8 +65,9 @@ public final class WrappedRequest {
 	
 	/**
 	 * Returns an {@link Optional} of a parameter by key
-	 * @param key
-	 * @return
+	 * 
+	 * @param key parameter name
+	 * @return parameter value
 	 */
 	public Optional<String> getParam(String key) {
 		return Optional.ofNullable(params.get(key));
@@ -73,8 +75,9 @@ public final class WrappedRequest {
 	
 	/**
 	 * Returns an {@link Optional} of a querystring value by key
-	 * @param key
-	 * @return
+	 * 
+	 * @param key query name
+	 * @return query value
 	 */
 	public Optional<String> getQuery(String key) {
 		return Optional.ofNullable(query.get(key));
@@ -84,6 +87,7 @@ public final class WrappedRequest {
 	 * Returns the request path omitting the query part.
 	 * <br>
 	 * (eg.: "http://example.com <b>/this/is/the/path</b> ?this=is&amp;not")
+	 * 
 	 * @return the requested path
 	 */
 	public String getPath()  {

@@ -16,7 +16,7 @@ public interface HttpCallback {
 	 * 
 	 * @param req Request
 	 * @param res Response
-	 * @throws IOException
+	 * @throws IOException may throw an exception on write failure
 	 */
 	public void call(WrappedRequest req, WrappedResponse res) throws IOException;
 	
