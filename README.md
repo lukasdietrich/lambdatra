@@ -1,4 +1,5 @@
 # lambdatra
+![Build Status](http://ci.lukd.me/lukasdietrich/lambdatra/badge?branch=master)
 
 Callback oriented http and websocket server based on netty.io
 
