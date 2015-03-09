@@ -2,8 +2,10 @@ package com.lukasdietrich.lambdatra.reaction.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders.Names;
+import io.netty.handler.codec.http.ClientCookieEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -66,6 +68,17 @@ public final class WrappedResponse extends OutputStream {
 	 */
 	public void enableCache(long expires) {
 		setHeader(Names.CACHE_CONTROL, String.format("max-age=%d", expires));
+	}
+	
+	/**
+	 * Sets headers to store a list of cookies.
+	 * <br>
+	 * <b>Warning:</b> any following call will override the previous! 
+	 * 
+	 * @param cookies cookies to be set
+	 */
+	public void setCookie(Cookie... cookies) {
+		setHeader(Names.SET_COOKIE, ClientCookieEncoder.encode(cookies));
 	}
 	
 	/**

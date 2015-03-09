@@ -1,13 +1,18 @@
 package com.lukasdietrich.lambdatra.reaction.http;
 
+import io.netty.handler.codec.http.Cookie;
+import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Wraps {@link HttpRequest} into a simpler class
@@ -31,7 +36,7 @@ public final class WrappedRequest {
 		this.req = req;
 		this.params = params;
 		this.query = new HashMap<>();
-	
+		
 		{
 			String[] uri = req.getUri().split("\\?", 2);
 			path = uri[0];
@@ -81,6 +86,21 @@ public final class WrappedRequest {
 	 */
 	public Optional<String> getQuery(String key) {
 		return Optional.ofNullable(query.get(key));
+	}
+	
+	/**
+	 * Returns a {@link Set} of {@link Cookie}s.
+	 * 
+	 * @return set of of cookies
+	 */
+	public Set<Cookie> getCookies() {
+		Optional<String> header = getHeader(HttpHeaders.Names.COOKIE);
+		
+		if (header.isPresent()) {
+			return CookieDecoder.decode(header.get());
+		}
+		
+		return new HashSet<>(0);
 	}
 	
 	/**
