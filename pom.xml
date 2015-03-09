@@ -9,8 +9,16 @@
 	<packaging>jar</packaging>
 
 	<name>Lambdatra</name>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/lukasdietrich/lambdatra</url>
 	<description>Callback oriented http and websocket server based on netty.io</description>
+
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>local, temporary repository</name>
+			<url>file://${project.build.directory}/repo</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,25 +34,6 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
