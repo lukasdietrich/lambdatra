@@ -20,6 +20,25 @@ public static void main(String... args) {
 
 ## Download
 
+```
+<repositories>
+	<repository>
+		<id>lukasdietrich</id>
+		<url>http://maven.lukasdietrich.com</url>
+	</repository>
+</repositories>
+
+...
+
+<dependencies>
+	<dependency>
+		<groupId>com.lukasdietrich</groupId>
+		<artifactId>lambdatra</artifactId>
+		<version>LATEST</version>
+	</dependency>
+</dependencies>
+```
+
 The project can be downloaded as compiled .jar with all dependencies
 from <https://github.com/lukasdietrich/lambdatra/releases>!
 
