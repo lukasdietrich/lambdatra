@@ -39,9 +39,6 @@ public static void main(String... args) {
 </dependencies>
 ```
 
-The project can be downloaded as compiled .jar with all dependencies
-from <https://github.com/lukasdietrich/lambdatra/releases>!
-
 ## Javadoc
 
 <http://lukasdietrich.github.io/lambdatra/javadoc/>
