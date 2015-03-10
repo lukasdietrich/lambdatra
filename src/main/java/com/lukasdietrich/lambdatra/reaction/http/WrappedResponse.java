@@ -102,7 +102,7 @@ public final class WrappedResponse<S> extends OutputStream {
 	 * <br>
 	 * <i>Multiple calls will be merged to one header field!</i>
 	 * 
-	 * @param cookies cookies to be set
+	 * @param cookie cookie to be set
 	 */
 	public void setCookie(Cookie cookie) {
 		cookies.add(cookie);

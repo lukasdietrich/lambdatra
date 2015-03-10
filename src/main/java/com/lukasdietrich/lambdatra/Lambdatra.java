@@ -39,6 +39,7 @@ public class Lambdatra<S> {
 	 * 
 	 * @param port port to listen for connections
 	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
+	 * @param <S> class of session value
 	 */
 	public static <S> void create(int port, SessionStore<S> sessions, Consumer<Lambdatra<S>> context) {
 		Lambdatra<S> instance = new Lambdatra<>(sessions);
@@ -59,6 +60,14 @@ public class Lambdatra<S> {
 		}
 	}
 	
+	/**
+	 * Shorthand for {@link #create(int, SessionStore, Consumer)} using
+	 * a {@link DefaultSessionStore}.
+	 * 
+	 * @param port port to listen for connections
+	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
+	 * @param <S> class of session value
+	 */
 	public static void create(int port, Consumer<Lambdatra<Map<String, String>>> context) {
 		create(port, new DefaultSessionStore<Map<String, String>>("LAMBDATRASES", 1_800_000), context);
 	}
