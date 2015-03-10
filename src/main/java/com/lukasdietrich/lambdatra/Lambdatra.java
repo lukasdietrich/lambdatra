@@ -4,6 +4,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
@@ -16,14 +18,17 @@ import com.lukasdietrich.lambdatra.reaction.websocket.WebSocket;
 import com.lukasdietrich.lambdatra.reaction.websocket.WsAdapter;
 import com.lukasdietrich.lambdatra.routing.Route;
 import com.lukasdietrich.lambdatra.routing.Router;
+import com.lukasdietrich.lambdatra.session.DefaultSessionStore;
+import com.lukasdietrich.lambdatra.session.SessionStore;
 
 /**
  * Main class for Lambdatra server framework.
  * 
  * @author Lukas Dietrich
  *
+ * @param <S> class of session value
  */
-public class Lambdatra {
+public class Lambdatra<S> {
 	
 	/**
 	 * Creates a server instance on a given port and calls
@@ -35,8 +40,8 @@ public class Lambdatra {
 	 * @param port port to listen for connections
 	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
 	 */
-	public static void create(int port, Consumer<Lambdatra> context) {
-		Lambdatra instance = new Lambdatra();
+	public static <S> void create(int port, SessionStore<S> sessions, Consumer<Lambdatra<S>> context) {
+		Lambdatra<S> instance = new Lambdatra<>(sessions);
 		context.accept(instance);
 		
 		try {
@@ -53,15 +58,21 @@ public class Lambdatra {
 			instance.workerGroup.shutdownGracefully();
 		}
 	}
+	
+	public static void create(int port, Consumer<Lambdatra<Map<String, String>>> context) {
+		create(port, new DefaultSessionStore<Map<String, String>>("LAMBDATRASES", 1_800_000), context);
+	}
 
 	private ServerBootstrap serv;
 	private Router router;
+	private SessionStore<S> sessions;
 	
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	
-	private Lambdatra() {
+	private Lambdatra(SessionStore<S> sessions) {
 		this.router = new Router();
+		this.sessions = sessions;
 		
 		this.bossGroup = new NioEventLoopGroup(1);
 		this.workerGroup = new NioEventLoopGroup();
@@ -72,7 +83,7 @@ public class Lambdatra {
 			.channel(NioServerSocketChannel.class)
 			.childHandler(new NettyInitializer(router));
 	}
-	
+
 	/**
 	 * Shorthand for {@link #onWebSocket(String, Class, WSCallback)}
 	 * with empty callback.
@@ -81,7 +92,7 @@ public class Lambdatra {
 	 * @param sockClass {@link WebSocket} implementation class
 	 * @return {@link Lambdatra} for chaining
 	 */
-	public Lambdatra onWebSocket(String pattern, Class<? extends WebSocket> sockClass) {
+	public Lambdatra<S> onWebSocket(String pattern, Class<? extends WebSocket> sockClass) {
 		return onWebSocket(pattern, sockClass, s -> {});
 	}
 	
@@ -97,7 +108,7 @@ public class Lambdatra {
 	 * @param cb {@link WSCallback}, that is called on incoming connections
 	 * @return {@link Lambdatra} for chaining
 	 */
-	public <E extends WebSocket> Lambdatra onWebSocket(String pattern, Class<E> sockClass, WSCallback<E> cb) {
+	public <E extends WebSocket> Lambdatra<S> onWebSocket(String pattern, Class<E> sockClass, WSCallback<E> cb) {
 		this.router.addRoute(new Route<CallbackAdapter<?>>(pattern, new WsAdapter<E>(pattern, cb, sockClass)));
 		return this;
 	}
@@ -119,8 +130,8 @@ public class Lambdatra {
 	 * @param cb {@link HttpCallback}, that has to respond to a {@link WrappedRequest}
 	 * @return {@link Lambdatra} for chaining
 	 */
-	public Lambdatra on(String pattern, HttpCallback cb) {
-		this.router.addRoute(new Route<>(pattern, new HttpAdapter(cb)));
+	public Lambdatra<S> on(String pattern, HttpCallback<S> cb) {
+		this.router.addRoute(new Route<>(pattern, new HttpAdapter<S>(cb, sessions)));
 		return this;
 	}
 	

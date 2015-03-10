@@ -3,16 +3,21 @@ package com.lukasdietrich.lambdatra.reaction.http;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.http.Cookie;
+import io.netty.handler.codec.http.DefaultCookie;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders.Names;
-import io.netty.handler.codec.http.ClientCookieEncoder;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.ServerCookieEncoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+
+import com.lukasdietrich.lambdatra.session.SessionStore;
 
 import de.neuland.jade4j.Jade4J;
 
@@ -24,12 +29,24 @@ import de.neuland.jade4j.Jade4J;
  * @author Lukas Dietrich
  *
  */
-public final class WrappedResponse extends OutputStream {
+public final class WrappedResponse<S> extends OutputStream {
 
 	private FullHttpResponse res;
+	private SessionStore<S> sessions;
 	
-	public WrappedResponse(FullHttpResponse res) {
+	private List<Cookie> cookies;
+	
+	public WrappedResponse(FullHttpResponse res, SessionStore<S> sessions) {
 		this.res = res;
+		this.sessions = sessions;
+		this.cookies = new Vector<>();
+	}
+	
+	/**
+	 * Applies <i>cached</i> header values
+	 */
+	protected void applyHeader() {
+		setHeader(Names.SET_COOKIE, ServerCookieEncoder.encode(cookies));
 	}
 	
 	/**
@@ -40,6 +57,16 @@ public final class WrappedResponse extends OutputStream {
 	 */
 	public void setHeader(String key, String value) {
 		res.headers().set(key.toString(), value);
+	}
+	
+	/**
+	 * Sets an arbitrary header
+	 * 
+	 * @param key header name
+	 * @param values list of values
+	 */
+	public void setHeader(String key, Iterable<String> values) {
+		res.headers().set(key, values);
 	}
 	
 	/**
@@ -71,14 +98,24 @@ public final class WrappedResponse extends OutputStream {
 	}
 	
 	/**
-	 * Sets headers to store a list of cookies.
+	 * Sets headers to store a cookie.
 	 * <br>
-	 * <b>Warning:</b> any following call will override the previous! 
+	 * <i>Multiple calls will be merged to one header field!</i>
 	 * 
 	 * @param cookies cookies to be set
 	 */
-	public void setCookie(Cookie... cookies) {
-		setHeader(Names.SET_COOKIE, ClientCookieEncoder.encode(cookies));
+	public void setCookie(Cookie cookie) {
+		cookies.add(cookie);
+	}
+	
+	/**
+	 * Starts a session and sets the corresponding
+	 * session id as a cookie
+	 * 
+	 * @param value session value
+	 */
+	public void startSession(S value) {
+		setCookie(new DefaultCookie(sessions.getCookieKey(), sessions.startSession(value)));
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.lukasdietrich.lambdatra.NettyHandler;
 import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
+import com.lukasdietrich.lambdatra.session.SessionStore;
 
 /**
  * {@link CallbackAdapter} implementation for {@link HttpCallback}
@@ -19,16 +20,24 @@ import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
  * @author Lukas Dietrich
  *
  */
-public class HttpAdapter extends CallbackAdapter<HttpCallback> {
+public class HttpAdapter<S> extends CallbackAdapter<HttpCallback<S>> {
 	
-	public HttpAdapter(HttpCallback callback) {
+	private SessionStore<S> sessions;
+	
+	public HttpAdapter(HttpCallback<S> callback, SessionStore<S> sessions) {
 		super(callback);
+		
+		this.sessions = sessions;
 	}
 
 	@Override
 	public void call(NettyHandler handler, ChannelHandlerContext ctx, FullHttpRequest req, Map<String, String> params) throws IOException {
 		FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-		getCallback().call(new WrappedRequest(req, params), new WrappedResponse(res));
+		WrappedRequest<S> wreq = new WrappedRequest<>(req, params, sessions);
+		WrappedResponse<S> wres = new WrappedResponse<>(res, sessions);
+		
+		getCallback().call(wreq, wres);
+		wres.applyHeader();
 		ctx.channel().writeAndFlush(res);
 		ctx.close();
 	}

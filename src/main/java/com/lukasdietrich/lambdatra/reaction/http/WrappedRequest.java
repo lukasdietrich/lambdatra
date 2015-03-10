@@ -3,7 +3,7 @@ package com.lukasdietrich.lambdatra.reaction.http;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpRequest;
 
 import java.io.UnsupportedEncodingException;
@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.lukasdietrich.lambdatra.session.SessionStore;
+
 /**
  * Wraps {@link HttpRequest} into a simpler class
  * and combines it with access to parsed url query
@@ -22,20 +24,24 @@ import java.util.Set;
  * @author Lukas Dietrich
  *
  */
-public final class WrappedRequest {
+public final class WrappedRequest<S> {
 
 	private static final String ENCODING = "UTF-8";
 	
 	private FullHttpRequest req;
 	private Map<String, String> params;
 	private Map<String, String> query;
+	private Map<String, Cookie> cookies;
+	private SessionStore<S> sessions;
 	
 	private String path;
 	
-	public WrappedRequest(FullHttpRequest req, Map<String, String> params) {
+	public WrappedRequest(FullHttpRequest req, Map<String, String> params, SessionStore<S> sessions) {
 		this.req = req;
 		this.params = params;
 		this.query = new HashMap<>();
+		this.cookies = new HashMap<>();
+		this.sessions = sessions;
 		
 		{
 			String[] uri = req.getUri().split("\\?", 2);
@@ -55,6 +61,14 @@ public final class WrappedRequest {
 					}
 				}
 			}
+		}
+		
+		{
+			getHeader(Names.COOKIE).ifPresent(header -> {
+				for (Cookie c : CookieDecoder.decode(header)) {
+					cookies.put(c.getName(), c);
+				}
+			});
 		}
 	}
 	
@@ -89,18 +103,36 @@ public final class WrappedRequest {
 	}
 	
 	/**
+	 * Returns an {@link Optional} of the session
+	 * 
+	 * @return session value
+	 */
+	public Optional<S> getSession() {
+		Optional<Cookie> cookie = getCookie(sessions.getCookieKey());
+		
+		return (cookie.isPresent())
+				? sessions.getSession(cookie.get().getValue())
+				: Optional.empty();
+	}
+	
+	/**
 	 * Returns a {@link Set} of {@link Cookie}s.
 	 * 
+	 * @deprecated use {@link #getCookie(String)} instead
 	 * @return set of of cookies
 	 */
 	public Set<Cookie> getCookies() {
-		Optional<String> header = getHeader(HttpHeaders.Names.COOKIE);
-		
-		if (header.isPresent()) {
-			return CookieDecoder.decode(header.get());
-		}
-		
-		return new HashSet<>(0);
+		return new HashSet<>(cookies.values());
+	}
+	
+	/**
+	 * Returns an {@link Optional} of a {@link Cookie} by key
+	 * 
+	 * @param key name of {@link Cookie}
+	 * @return a cookie
+	 */
+	public Optional<Cookie> getCookie(String key) {
+		return Optional.ofNullable(cookies.get(key));
 	}
 	
 	/**

@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Lukas Dietrich
  *
  */
-public class StaticCallback implements HttpCallback {
+public class StaticCallback<S> implements HttpCallback<S> {
 
 	private final String[] INDICE = { "index.html", "index.htm" };
 	
@@ -73,7 +73,7 @@ public class StaticCallback implements HttpCallback {
 		this(source, false, maxAge);
 	}
 	
-	private void serveFile(File f, WrappedResponse res) throws IOException {
+	private void serveFile(File f, WrappedResponse<S> res) throws IOException {
 		if (maxAge > 0) {
 			res.enableCache(maxAge);
 		}
@@ -96,7 +96,7 @@ public class StaticCallback implements HttpCallback {
 	}
 	
 	@Override
-	public void call(WrappedRequest req, WrappedResponse res) throws IOException {
+	public void call(WrappedRequest<S> req, WrappedResponse<S> res) throws IOException {
 		File dest = new File(source, req.getPath());
 		
 		if (dest.exists()) {

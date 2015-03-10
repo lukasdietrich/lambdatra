@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  */
 @FunctionalInterface
-public interface HttpCallback {
+public interface HttpCallback<S> {
 
 	/**
 	 * Called on incoming http request.
@@ -18,6 +18,6 @@ public interface HttpCallback {
 	 * @param res Response
 	 * @throws IOException may throw an exception on write failure
 	 */
-	public void call(WrappedRequest req, WrappedResponse res) throws IOException;
+	public void call(WrappedRequest<S> req, WrappedResponse<S> res) throws IOException;
 	
 }
