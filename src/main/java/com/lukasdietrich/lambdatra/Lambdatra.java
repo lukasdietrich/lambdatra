@@ -66,7 +66,6 @@ public class Lambdatra<S> {
 	 * 
 	 * @param port port to listen for connections
 	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
-	 * @param <S> class of session value
 	 */
 	public static void create(int port, Consumer<Lambdatra<Map<String, String>>> context) {
 		create(port, new DefaultSessionStore<Map<String, String>>("LAMBDATRASES", 1_800_000), context);
