@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.lukasdietrich.lambdatra.reaction.Adapter;
 
 /**
- * Container for a {@link Adapater} bound to a {@link RoutePattern}
+ * Container for a {@link Adapter} bound to a {@link RoutePattern}
  * 
  * @author Lukas Dietrich
  *
