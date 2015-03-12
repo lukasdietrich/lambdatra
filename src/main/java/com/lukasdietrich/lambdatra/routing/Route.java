@@ -6,11 +6,11 @@ import java.util.Optional;
 import com.lukasdietrich.lambdatra.reaction.Adapter;
 
 /**
- * Container for a {@link CallbackAdapter} bound to a {@link RoutePattern}
+ * Container for a {@link Adapater} bound to a {@link RoutePattern}
  * 
  * @author Lukas Dietrich
  *
- * @param <E> class of {@link CallbackAdapter} implementation
+ * @param <E> class of {@link Adapter} implementation
  */
 public class Route<E extends Adapter> {
 	
@@ -19,7 +19,7 @@ public class Route<E extends Adapter> {
 	
 	/**
 	 * Creates a {@link Route} that holds both, 
-	 * a {@link CallbackAdapter} and a {@link RoutePattern}.
+	 * an {@link Adapter} and a {@link RoutePattern}.
 	 * 
 	 * @param pattern url pattern to match requests against
 	 * @param adapter an {@link Adapter} to handle requests on match

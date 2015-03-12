@@ -39,6 +39,7 @@ public class Lambdatra<S> {
 	 * {@link Lambdatra}.{@link #create(int, Consumer)}
 	 * 
 	 * @param port port to listen for connections
+	 * @param sessions {@link SessionStore} to use
 	 * @param context a {@link Consumer} callback, that exposes the {@link Lambdatra} instance
 	 * @param <S> class of session value
 	 */

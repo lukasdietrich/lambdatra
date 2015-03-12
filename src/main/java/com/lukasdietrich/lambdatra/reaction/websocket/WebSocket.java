@@ -2,13 +2,11 @@ package com.lukasdietrich.lambdatra.reaction.websocket;
 
 import java.util.UUID;
 
-import com.lukasdietrich.lambdatra.Lambdatra;
-
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
- * Abstract {@link WebSocket} for {@link Lambdatra#onWebSocket(String, Class, WSCallback)}
+ * Abstract {@link WebSocket}
  * 
  * @author Lukas Dietrich
  *
