@@ -13,31 +13,27 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 
 import java.io.IOException;
-import java.io.InvalidClassException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.lukasdietrich.lambdatra.NettyHandler;
-import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
+import com.lukasdietrich.lambdatra.reaction.Adapter;
 
 /**
- * {@link CallbackAdapter} implementation for {@link WSCallback}
+ * {@link Adapter} implementation for WebSockets
  * 
  * @author Lukas Dietrich
  *
- * @param <E> class of {@link WebSocket} implementation
  */
-public class WsAdapter<E extends WebSocket> extends CallbackAdapter<WSCallback<E>> {
+public class WsAdapter extends Adapter {
 	
 	private String pattern;
-	private Class<E> sockClass;
+	private Supplier<WebSocket> newInstance;
 	
-	public WsAdapter(String pattern, WSCallback<E> callback, Class<E> sockClass) {
-		super(callback);
-		
+	public WsAdapter(String pattern, Supplier<WebSocket> newInstance) {
 		this.pattern = pattern;
-		this.sockClass = sockClass;
+		this.newInstance = newInstance;
 	}
 
 	@Override
@@ -53,19 +49,9 @@ public class WsAdapter<E extends WebSocket> extends CallbackAdapter<WSCallback<E
 		} else {
 			Channel ch = handshaker.handshake(ctx.channel(), req).channel();
 			
-			try {
-				E ws = sockClass.getConstructor().newInstance();
-				handler.onWsFrame(new WsBridge(handshaker, ch, ws));
-				getCallback().call(ws);
-				ws.onOpen();
-			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
-				throw new InvalidClassException(String.format(
-							"Invalid class '%s' does not implement a standard constructor.",
-							sockClass.getName()
-						));	
-			}
+			WebSocket ws = newInstance.get();
+			handler.onWsFrame(new WsBridge(handshaker, ch, ws));
+			ws.onOpen();
 		}
 		
 	}

@@ -45,7 +45,7 @@ public class NettyHandler extends SimpleChannelInboundHandler<Object> {
 	private void handleHTTP(ChannelHandlerContext ctx, FullHttpRequest req) {
 		router.findRoute(req.getUri()).ifPresent(match -> {
 			try {
-				match.getKey().getCallback().call(this, ctx, req, match.getValue());
+				match.getKey().getAdapter().call(this, ctx, req, match.getValue());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

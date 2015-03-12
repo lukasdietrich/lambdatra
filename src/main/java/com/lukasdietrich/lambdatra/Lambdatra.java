@@ -5,15 +5,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import java.lang.reflect.Constructor;
+import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpCallback;
 import com.lukasdietrich.lambdatra.reaction.http.StaticCallback;
 import com.lukasdietrich.lambdatra.reaction.http.WrappedRequest;
-import com.lukasdietrich.lambdatra.reaction.websocket.WSCallback;
 import com.lukasdietrich.lambdatra.reaction.websocket.WebSocket;
 import com.lukasdietrich.lambdatra.reaction.websocket.WsAdapter;
 import com.lukasdietrich.lambdatra.routing.Route;
@@ -93,31 +94,49 @@ public class Lambdatra<S> {
 	}
 
 	/**
-	 * Shorthand for {@link #onWebSocket(String, Class, WSCallback)}
-	 * with empty callback.
+	 * Shorthand for {@link #onWebSocket(String, Supplier)}
+	 * that creates a new instance of the class.
+	 * <br>
+	 * <b>Warning:</b> The class has to implement a default constructor
+	 * or an {@link InvalidParameterException} will be thrown !
 	 * 
 	 * @param pattern url pattern to bind this handler to
 	 * @param sockClass {@link WebSocket} implementation class
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra<S> onWebSocket(String pattern, Class<? extends WebSocket> sockClass) {
-		return onWebSocket(pattern, sockClass, s -> {});
+		boolean hasDefaultConstructor = false;
+		
+		for (Constructor<?> c : sockClass.getConstructors())
+			if (hasDefaultConstructor = c.getParameterCount() == 0)
+				break;
+		
+		if (hasDefaultConstructor)
+			return onWebSocket(pattern, () -> {
+				try {
+					return sockClass.newInstance();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				return null;
+			});
+		
+		throw new InvalidParameterException("Socket class has to implement default constructor !");
 	}
 	
 	/**
 	 * Binds a given path to handle incoming Websockets.
-	 * For each successful request a new instance of 
-	 * the given class is created to represent the network
-	 * entity.
+	 * <br>
+	 * For each successful request the {@link Supplier} will
+	 * be called to create a new {@link WebSocket} instance.
 	 * 
-	 * @param <E> generic type of sockClass
 	 * @param pattern url pattern to bind this handler to
-	 * @param sockClass {@link WebSocket} implementation class
-	 * @param cb {@link WSCallback}, that is called on incoming connections
+	 * @param newInstance {@link Supplier} of new {@link WebSocket} instances
 	 * @return {@link Lambdatra} for chaining
 	 */
-	public <E extends WebSocket> Lambdatra<S> onWebSocket(String pattern, Class<E> sockClass, WSCallback<E> cb) {
-		this.router.addRoute(new Route<CallbackAdapter<?>>(pattern, new WsAdapter<E>(pattern, cb, sockClass)));
+	public Lambdatra<S> onWebSocket(String pattern, Supplier<WebSocket> newInstance) {
+		this.router.addRoute(new Route<>(pattern, new WsAdapter(pattern, newInstance)));
 		return this;
 	}
 	

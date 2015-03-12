@@ -3,7 +3,7 @@ package com.lukasdietrich.lambdatra.routing;
 import java.util.Map;
 import java.util.Optional;
 
-import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
+import com.lukasdietrich.lambdatra.reaction.Adapter;
 
 /**
  * Container for a {@link CallbackAdapter} bound to a {@link RoutePattern}
@@ -12,21 +12,21 @@ import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
  *
  * @param <E> class of {@link CallbackAdapter} implementation
  */
-public class Route<E extends CallbackAdapter<?>> {
+public class Route<E extends Adapter> {
 	
 	private RoutePattern pattern;
-	private E cb;
+	private E adapter;
 	
 	/**
 	 * Creates a {@link Route} that holds both, 
 	 * a {@link CallbackAdapter} and a {@link RoutePattern}.
 	 * 
 	 * @param pattern url pattern to match requests against
-	 * @param cb a {@link CallbackAdapter} to handle requests on match
+	 * @param adapter an {@link Adapter} to handle requests on match
 	 */
-	public Route(String pattern, E cb) {
+	public Route(String pattern, E adapter) {
 		this.pattern = new RoutePattern(pattern);
-		this.cb = cb;
+		this.adapter = adapter;
 	}
 	
 	/**
@@ -41,12 +41,12 @@ public class Route<E extends CallbackAdapter<?>> {
 	}
 	
 	/**
-	 * Returns the {@link CallbackAdapter}
+	 * Returns the {@link Adapter}
 	 * 
-	 * @return the underlying callback
+	 * @return the underlying adapter
 	 */
-	public E getCallback() {
-		return this.cb;
+	public E getAdapter() {
+		return this.adapter;
 	}
 	
 }
