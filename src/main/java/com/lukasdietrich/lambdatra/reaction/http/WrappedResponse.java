@@ -18,9 +18,7 @@ import java.util.Vector;
 import com.lukasdietrich.lambdatra.session.SessionStore;
 
 /**
- * Wraps {@link HttpResponse} into a simpler class
- * and adding the ability to render {@link Jade4J}
- * Templates.
+ * Wraps {@link HttpResponse} into a simpler class.
  * 
  * @author Lukas Dietrich
  *
