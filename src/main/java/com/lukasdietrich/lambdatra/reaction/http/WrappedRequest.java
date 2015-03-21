@@ -1,15 +1,18 @@
 package com.lukasdietrich.lambdatra.reaction.http;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -25,43 +28,20 @@ import com.lukasdietrich.lambdatra.session.SessionStore;
  *
  */
 public final class WrappedRequest<S> {
-
-	private static final String ENCODING = "UTF-8";
 	
 	private FullHttpRequest req;
+	private QueryStringDecoder query;
+	
 	private Map<String, String> params;
-	private Map<String, String> query;
 	private Map<String, Cookie> cookies;
 	private SessionStore<S> sessions;
-	
-	private String path;
 	
 	public WrappedRequest(FullHttpRequest req, Map<String, String> params, SessionStore<S> sessions) {
 		this.req = req;
 		this.params = params;
-		this.query = new HashMap<>();
+		this.query = new QueryStringDecoder(req.getUri());
 		this.cookies = new HashMap<>();
 		this.sessions = sessions;
-		
-		{
-			String[] uri = req.getUri().split("\\?", 2);
-			path = uri[0];
-			
-			if (uri.length > 1) {
-				for (String qpart : uri[1].split("&")) {
-					String[] q = qpart.split("=", 2);
-					
-					try {
-						query.put(URLDecoder.decode(q[0], ENCODING),
-								 (q.length > 1) 
-								 	? URLDecoder.decode(q[1], ENCODING) 
-								 	: "");
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
 		
 		{
 			getHeader(Names.COOKIE).ifPresent(header -> {
@@ -98,8 +78,16 @@ public final class WrappedRequest<S> {
 	 * @param key query name
 	 * @return query value
 	 */
-	public Optional<String> getQuery(String key) {
-		return Optional.ofNullable(query.get(key));
+	public Optional<List<String>> getQuery(String key) {
+		return Optional.ofNullable(query.parameters().get(key));
+	}
+	
+	public HttpPostRequestDecoder parseBody() {
+		return new HttpPostRequestDecoder(new DefaultHttpDataFactory(Short.MAX_VALUE), req);
+	}
+	
+	public ByteBuf getBody() {
+		return req.content();
 	}
 	
 	/**
@@ -143,7 +131,7 @@ public final class WrappedRequest<S> {
 	 * @return the requested path
 	 */
 	public String getPath()  {
-		return path;
+		return query.path();
 	}
 	
 }
