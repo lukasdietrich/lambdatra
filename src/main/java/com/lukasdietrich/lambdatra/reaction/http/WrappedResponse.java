@@ -12,14 +12,10 @@ import io.netty.handler.codec.http.ServerCookieEncoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import com.lukasdietrich.lambdatra.session.SessionStore;
-
-import de.neuland.jade4j.Jade4J;
 
 /**
  * Wraps {@link HttpResponse} into a simpler class
@@ -125,18 +121,6 @@ public final class WrappedResponse<S> extends OutputStream {
 	 */
 	protected ByteBuf getBuffer() {
 		return res.content();
-	}
-	
-	/**
-	 * Renders a Jade Template (via {@link Jade4J}) and outputs
-	 * it to the {@link ByteBuf}.
-	 * 
-	 * @param template path of template to be rendered
-	 * @param partials render partials
-	 * @throws IOException may throw an exception on io failure
-	 */
-	public void render(URL template, Map<String, Object> partials) throws IOException {
-		write(Jade4J.render(template, partials));
 	}
 
 	/**
