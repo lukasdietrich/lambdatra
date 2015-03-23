@@ -109,7 +109,9 @@ public final class WrappedResponse<S> extends OutputStream {
 	 * @param value session value
 	 */
 	public void startSession(S value) {
-		setCookie(new DefaultCookie(sessions.getCookieKey(), sessions.startSession(value)));
+		Cookie cookie = new DefaultCookie(sessions.getCookieKey(), sessions.startSession(value));
+		cookie.setPath("/");
+		setCookie(cookie);
 	}
 	
 	/**
