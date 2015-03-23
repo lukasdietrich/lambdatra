@@ -28,6 +28,13 @@ public interface SessionStore<E> {
 	public String startSession(E value);
 	
 	/**
+	 * Deletes a session from the {@link SessionStore}
+	 * 
+	 * @param id session id
+	 */
+	public void stopSession(String id);
+	
+	/**
 	 * Returns an {@link Optional} of a session value,
 	 * that may be empty, if none exists.
 	 * 

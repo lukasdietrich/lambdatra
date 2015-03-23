@@ -55,6 +55,11 @@ public class DefaultSessionStore<E> implements SessionStore<E> {
 		values.put(key, new LifeTimeWrapper(value));
 		return key;
 	}
+	
+	@Override
+	public void stopSession(String id) {
+		values.remove(id);
+	}
 
 	@Override
 	public Optional<E> getSession(String id) {
@@ -98,5 +103,5 @@ public class DefaultSessionStore<E> implements SessionStore<E> {
 		}
 		
 	}
-	
+
 }
