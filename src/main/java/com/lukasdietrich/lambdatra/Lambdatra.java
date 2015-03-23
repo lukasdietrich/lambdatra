@@ -13,7 +13,8 @@ import java.util.function.Supplier;
 
 import com.lukasdietrich.lambdatra.reaction.http.HttpAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpCallback;
-import com.lukasdietrich.lambdatra.reaction.http.StaticCallback;
+import com.lukasdietrich.lambdatra.reaction.http.MiddlewareAdapter;
+import com.lukasdietrich.lambdatra.reaction.http.MiddlewareCallback;
 import com.lukasdietrich.lambdatra.reaction.http.WrappedRequest;
 import com.lukasdietrich.lambdatra.reaction.websocket.WebSocket;
 import com.lukasdietrich.lambdatra.reaction.websocket.WsAdapter;
@@ -151,15 +152,28 @@ public class Lambdatra<S> {
 	 * 	<li><code>/foo/:bar</code> - bar is a parameter</li>
 	 *  <li><code>/foo/bar/*</code> - allows subpaths</li>
 	 * </ul>
-	 * {@link StaticCallback} is an implementation of {@link HttpCallback}
-	 * for simple file servers.
 	 * 
 	 * @param pattern url pattern to bind this handler to
 	 * @param cb {@link HttpCallback}, that has to respond to a {@link WrappedRequest}
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra<S> on(String pattern, HttpCallback<S> cb) {
-		this.router.addRoute(new Route<>(pattern, new HttpAdapter<S>(cb, sessions)));
+		this.router.addRoute(new Route<>(pattern, new HttpAdapter<>(cb, sessions)));
+		return this;
+	}
+	
+	/**
+	 * Binds a given {@link MiddlewareCallback} to a path.
+	 * It will work similar to {@link #on(String, HttpCallback)},
+	 * but the {@link MiddlewareCallback} has to return, whether
+	 * the request is fullfilled or not.
+	 * 
+	 * @param pattern url pattern to bind this handler to
+	 * @param cb {@link MiddlewareCallback}, that has to respond to a {@link WrappedRequest}
+	 * @return {@link Lambdatra} for chaining
+	 */
+	public Lambdatra<S> use(String pattern, MiddlewareCallback<S> cb) {
+		this.router.addRoute(new Route<>(pattern, new MiddlewareAdapter<>(cb, sessions)));
 		return this;
 	}
 	

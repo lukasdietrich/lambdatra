@@ -37,7 +37,7 @@ public class WsAdapter extends Adapter {
 	}
 
 	@Override
-	public void call(NettyHandler handler, ChannelHandlerContext ctx, FullHttpRequest req, Map<String, String> params) throws IOException {
+	public boolean call(NettyHandler handler, ChannelHandlerContext ctx, FullHttpRequest req, Map<String, String> params) throws IOException {
 		WebSocketServerHandshaker handshaker = new WebSocketServerHandshakerFactory(
 													String.format("ws://%s%s", req.headers().get(Names.HOST), pattern), 
 													null, 
@@ -54,6 +54,7 @@ public class WsAdapter extends Adapter {
 			ws.onOpen();
 		}
 		
+		return true;
 	}
 	
 	private class WsBridge implements BiConsumer<ChannelHandlerContext, WebSocketFrame> {

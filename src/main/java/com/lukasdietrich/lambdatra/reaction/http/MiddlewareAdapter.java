@@ -6,21 +6,20 @@ import com.lukasdietrich.lambdatra.reaction.Adapter;
 import com.lukasdietrich.lambdatra.session.SessionStore;
 
 /**
- * {@link Adapter} for {@link HttpCallback}
+ * {@link Adapter} for {@link MiddlewareCallback}
  * 
  * @author Lukas Dietrich
  *
  */
-public class HttpAdapter<S> extends BaseHttpAdapter<S, HttpCallback<S>>{
+public class MiddlewareAdapter<S> extends BaseHttpAdapter<S, MiddlewareCallback<S>> {
 
-	public HttpAdapter(HttpCallback<S> callback, SessionStore<S> sessions) {
+	public MiddlewareAdapter(MiddlewareCallback<S> callback, SessionStore<S> sessions) {
 		super(callback, sessions);
 	}
 
 	@Override
 	protected boolean handle(WrappedRequest<S> req, WrappedResponse<S> res) throws IOException {
-		getCallback().call(req, res);
-		return true;
+		return getCallback().call(req, res);
 	}
 
 }
