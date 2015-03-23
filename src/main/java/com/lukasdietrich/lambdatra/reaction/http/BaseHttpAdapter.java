@@ -35,7 +35,7 @@ public abstract class BaseHttpAdapter<S, E> extends CallbackAdapter<E> {
 	public boolean call(NettyHandler handler, ChannelHandlerContext ctx, FullHttpRequest req, Map<String, String> params) throws IOException {
 		FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 		WrappedRequest<S> wreq = new WrappedRequest<>(req, params, sessions);
-		WrappedResponse<S> wres = new WrappedResponse<>(res, sessions);
+		WrappedResponse<S> wres = new WrappedResponse<>(wreq, res, sessions);
 		
 		if (handle(wreq, wres)) {
 			wres.applyHeader();

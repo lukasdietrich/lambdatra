@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 
@@ -82,10 +82,20 @@ public final class WrappedRequest<S> {
 		return Optional.ofNullable(query.parameters().get(key));
 	}
 	
+	/**
+	 * Creates a {@link HttpPostRequestDecoder} of the request body.
+	 * 
+	 * @return a {@link HttpPostRequestDecoder}
+	 */
 	public HttpPostRequestDecoder parseBody() {
 		return new HttpPostRequestDecoder(new DefaultHttpDataFactory(Short.MAX_VALUE), req);
 	}
 	
+	/**
+	 * Returns the raw body
+	 * 
+	 * @return request body
+	 */
 	public ByteBuf getBody() {
 		return req.content();
 	}
@@ -96,11 +106,20 @@ public final class WrappedRequest<S> {
 	 * @return session value
 	 */
 	public Optional<S> getSession() {
-		Optional<Cookie> cookie = getCookie(sessions.getCookieKey());
+		Optional<Cookie> cookie = getSessionId();
 		
 		return (cookie.isPresent())
 				? sessions.getSession(cookie.get().getValue())
 				: Optional.empty();
+	}
+	
+	/**
+	 * Returns an {@link Optional} of the session cookie
+	 * 
+	 * @return session id
+	 */
+	protected Optional<Cookie> getSessionId() {
+		return getCookie(sessions.getCookieKey());
 	}
 	
 	/**

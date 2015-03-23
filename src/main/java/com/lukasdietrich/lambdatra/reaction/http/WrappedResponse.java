@@ -25,12 +25,14 @@ import com.lukasdietrich.lambdatra.session.SessionStore;
  */
 public final class WrappedResponse<S> extends OutputStream {
 
+	private WrappedRequest<S> req;
 	private FullHttpResponse res;
 	private SessionStore<S> sessions;
 	
 	private List<Cookie> cookies;
 	
-	public WrappedResponse(FullHttpResponse res, SessionStore<S> sessions) {
+	public WrappedResponse(WrappedRequest<S> req, FullHttpResponse res, SessionStore<S> sessions) {
+		this.req = req;
 		this.res = res;
 		this.sessions = sessions;
 		this.cookies = new Vector<>();
@@ -112,6 +114,13 @@ public final class WrappedResponse<S> extends OutputStream {
 		Cookie cookie = new DefaultCookie(sessions.getCookieKey(), sessions.startSession(value));
 		cookie.setPath("/");
 		setCookie(cookie);
+	}
+	
+	/**
+	 * Invalidates the current session id, if any is present.
+	 */
+	public void stopSession() {
+		req.getSessionId().ifPresent(c -> sessions.stopSession(c.getValue()));
 	}
 	
 	/**
