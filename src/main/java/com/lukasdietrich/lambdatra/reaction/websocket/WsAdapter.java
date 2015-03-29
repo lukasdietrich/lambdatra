@@ -1,8 +1,13 @@
 package com.lukasdietrich.lambdatra.reaction.websocket;
 
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
@@ -15,10 +20,12 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.lukasdietrich.lambdatra.NettyHandler;
 import com.lukasdietrich.lambdatra.reaction.Adapter;
+import com.lukasdietrich.lambdatra.reaction.CallbackAdapter;
+import com.lukasdietrich.lambdatra.reaction.http.WrappedRequest;
+import com.lukasdietrich.lambdatra.session.SessionStore;
 
 /**
  * {@link Adapter} implementation for WebSockets
@@ -26,14 +33,15 @@ import com.lukasdietrich.lambdatra.reaction.Adapter;
  * @author Lukas Dietrich
  *
  */
-public class WsAdapter extends Adapter {
+public class WsAdapter<S> extends CallbackAdapter<WsCallback<S>> {
 	
 	private String pattern;
-	private Supplier<WebSocket> newInstance;
+	private SessionStore<S> sessions;
 	
-	public WsAdapter(String pattern, Supplier<WebSocket> newInstance) {
+	public WsAdapter(String pattern, WsCallback<S> callback, SessionStore<S> sessions) {
+		super(callback);
 		this.pattern = pattern;
-		this.newInstance = newInstance;
+		this.sessions = sessions;
 	}
 
 	@Override
@@ -47,11 +55,19 @@ public class WsAdapter extends Adapter {
 		if (handshaker == null) {
 			WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
 		} else {
-			Channel ch = handshaker.handshake(ctx.channel(), req).channel();
+			WebSocket ws = getCallback().newInstance(new WrappedRequest<>(req, params, sessions));
 			
-			WebSocket ws = newInstance.get();
-			handler.onWsFrame(new WsBridge(handshaker, ch, ws));
-			ws.onOpen();
+			if (ws instanceof WebSocket) {
+				Channel ch = handshaker.handshake(ctx.channel(), req).channel();
+				handler.onWsFrame(new WsBridge(handshaker, ch, ws));
+				ws.onOpen();
+			} else {
+				FullHttpResponse forbidden = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.FORBIDDEN);
+				ByteBufUtil.writeUtf8(forbidden.content(), "Forbidden.");
+				
+				ctx.writeAndFlush(forbidden);
+				ctx.close();
+			}
 		}
 		
 		return true;

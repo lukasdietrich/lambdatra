@@ -18,6 +18,7 @@ import com.lukasdietrich.lambdatra.reaction.http.MiddlewareCallback;
 import com.lukasdietrich.lambdatra.reaction.http.WrappedRequest;
 import com.lukasdietrich.lambdatra.reaction.websocket.WebSocket;
 import com.lukasdietrich.lambdatra.reaction.websocket.WsAdapter;
+import com.lukasdietrich.lambdatra.reaction.websocket.WsCallback;
 import com.lukasdietrich.lambdatra.routing.Route;
 import com.lukasdietrich.lambdatra.routing.Router;
 import com.lukasdietrich.lambdatra.session.DefaultSessionStore;
@@ -114,7 +115,7 @@ public class Lambdatra<S> {
 				break;
 		
 		if (hasDefaultConstructor)
-			return onWebSocket(pattern, () -> {
+			return onWebSocket(pattern, r -> {
 				try {
 					return sockClass.newInstance();
 				} catch (Exception e) {
@@ -130,15 +131,15 @@ public class Lambdatra<S> {
 	/**
 	 * Binds a given path to handle incoming Websockets.
 	 * <br>
-	 * For each successful request the {@link Supplier} will
+	 * For each successful request the {@link WsCallback} will
 	 * be called to create a new {@link WebSocket} instance.
 	 * 
 	 * @param pattern url pattern to bind this handler to
-	 * @param newInstance {@link Supplier} of new {@link WebSocket} instances
+	 * @param cb {@link WsCallback} for new {@link WebSocket} instances
 	 * @return {@link Lambdatra} for chaining
 	 */
-	public Lambdatra<S> onWebSocket(String pattern, Supplier<WebSocket> newInstance) {
-		this.router.addRoute(new Route<>(pattern, new WsAdapter(pattern, newInstance)));
+	public Lambdatra<S> onWebSocket(String pattern, WsCallback<S> cb) {
+		this.router.addRoute(new Route<>(pattern, new WsAdapter<>(pattern, cb, sessions)));
 		return this;
 	}
 	
