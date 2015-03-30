@@ -16,6 +16,7 @@ public interface MiddlewareCallback<S> {
 	 * 
 	 * @param req Request
 	 * @param res Response
+	 * @return returns whether or not the request was fulfilled
 	 * @throws IOException may throw an exception on write failure
 	 */
 	public boolean call(WrappedRequest<S> req, WrappedResponse<S> res) throws IOException;

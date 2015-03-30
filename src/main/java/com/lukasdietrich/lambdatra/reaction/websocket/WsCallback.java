@@ -27,6 +27,6 @@ public interface WsCallback<S> {
 	 * @return a newly created {@link WebSocket} instance
 	 * @throws IOException may throw an exception on write failure
 	 */
-	public WebSocket newInstance(WrappedRequest<S> req);
+	public WebSocket newInstance(WrappedRequest<S> req) throws IOException;
 	
 }

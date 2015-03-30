@@ -9,7 +9,6 @@ import java.lang.reflect.Constructor;
 import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import com.lukasdietrich.lambdatra.reaction.http.HttpAdapter;
 import com.lukasdietrich.lambdatra.reaction.http.HttpCallback;
@@ -97,7 +96,7 @@ public class Lambdatra<S> {
 	}
 
 	/**
-	 * Shorthand for {@link #onWebSocket(String, Supplier)}
+	 * Shorthand for {@link #onWebSocket(String, WsCallback)}
 	 * that creates a new instance of the class.
 	 * <br>
 	 * <b>Warning:</b> The class has to implement a default constructor
