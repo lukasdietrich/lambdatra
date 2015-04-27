@@ -5,20 +5,12 @@
 
 	<groupId>com.lukasdietrich</groupId>
 	<artifactId>lambdatra</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2</version>
 	<packaging>jar</packaging>
 
 	<name>Lambdatra</name>
 	<url>https://github.com/lukasdietrich/lambdatra</url>
 	<description>Callback oriented http and websocket server based on netty.io</description>
-
-	<distributionManagement>
-		<repository>
-			<id>internal.repo</id>
-			<name>local, temporary repository</name>
-			<url>file://${project.build.directory}/repo</url>
-		</repository>
-	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

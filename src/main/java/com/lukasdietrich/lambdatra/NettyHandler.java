@@ -52,7 +52,7 @@ public class NettyHandler extends SimpleChannelInboundHandler<Object> {
 	}
 	
 	private void handleHTTP(ChannelHandlerContext ctx, FullHttpRequest req) throws IOException {
-		for (Entry<Route<?>, Map<String, String>> route : router.findRoute(req.getUri())) {
+		for (Entry<Route<?>, Map<String, String>> route : router.findRoute(req.getUri().split("\\?")[0])) {
 			if (route.getKey().getAdapter().call(this, ctx, req, route.getValue()))
 				return;
 		}
