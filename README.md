@@ -1,5 +1,5 @@
 # lambdatra
-![Build Status](http://ci.lukd.me/lukasdietrich/lambdatra/badge?branch=master)
+[![Build Status](https://drone.io/github.com/lukasdietrich/lambdatra/status.png)](https://drone.io/github.com/lukasdietrich/lambdatra/latest)
 
 Callback oriented http and websocket server based on netty.io
 
