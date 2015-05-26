@@ -19,6 +19,11 @@ public static void main(String... args) {
 }
 ```
 
+## Javadoc
+
+Javadocs are available at `https://jitpack.io/com/github/lukasdietrich/lambdatra/${VERSION}/javadoc/`.  
+eg. <https://jitpack.io/com/github/lukasdietrich/lambdatra/0.3.2/javadoc/>
+
 ## How it works (UML)
 
 ![UML](https://raw.githubusercontent.com/lukasdietrich/lambdatra/master/classes.png)
