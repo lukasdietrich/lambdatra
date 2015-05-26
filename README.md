@@ -1,5 +1,6 @@
 # lambdatra
 [![Build Status](https://drone.io/github.com/lukasdietrich/lambdatra/status.png)](https://drone.io/github.com/lukasdietrich/lambdatra/latest)
+[![Maven](https://img.shields.io/github/release/lukasdietrich/lambdatra.svg?label=JitPack%20Maven&style=flat-square)](https://jitpack.io/#lukasdietrich/lambdatra)
 
 Callback oriented http and websocket server based on netty.io
 
@@ -18,34 +19,9 @@ public static void main(String... args) {
 }
 ```
 
-## Download
-
-```
-<repositories>
-	<repository>
-		<id>lukasdietrich</id>
-		<url>http://maven.lukasdietrich.com</url>
-	</repository>
-</repositories>
-
-...
-
-<dependencies>
-	<dependency>
-		<groupId>com.lukasdietrich</groupId>
-		<artifactId>lambdatra</artifactId>
-		<version>LATEST</version>
-	</dependency>
-</dependencies>
-```
-
-## Javadoc
-
-<http://lukasdietrich.github.io/lambdatra/javadoc/>
-
 ## How it works (UML)
 
-![](https://raw.githubusercontent.com/lukasdietrich/lambdatra/master/classes.png)
+![UML](https://raw.githubusercontent.com/lukasdietrich/lambdatra/master/classes.png)
 
 ## License
 
