@@ -1,12 +1,12 @@
 package com.lukasdietrich.lambdatra.reaction.http;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.Cookie;
-import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 
@@ -45,8 +45,8 @@ public final class WrappedRequest<S> {
 		
 		{
 			getHeader(Names.COOKIE).ifPresent(header -> {
-				for (Cookie c : CookieDecoder.decode(header)) {
-					cookies.put(c.getName(), c);
+				for (Cookie c : ServerCookieDecoder.LAX.decode(header)) {
+					cookies.put(c.name(), c);
 				}
 			});
 		}
@@ -109,7 +109,7 @@ public final class WrappedRequest<S> {
 		Optional<Cookie> cookie = getSessionId();
 		
 		return (cookie.isPresent())
-				? sessions.getSession(cookie.get().getValue())
+				? sessions.getSession(cookie.get().value())
 				: Optional.empty();
 	}
 	

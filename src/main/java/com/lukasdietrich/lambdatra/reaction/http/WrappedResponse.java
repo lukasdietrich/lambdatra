@@ -2,13 +2,13 @@ package com.lukasdietrich.lambdatra.reaction.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.handler.codec.http.Cookie;
-import io.netty.handler.codec.http.DefaultCookie;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.ServerCookieEncoder;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,7 +42,7 @@ public final class WrappedResponse<S> extends OutputStream {
 	 * Applies <i>cached</i> header values
 	 */
 	protected void applyHeader() {
-		setHeader(Names.SET_COOKIE, ServerCookieEncoder.encode(cookies));
+		setHeader(Names.SET_COOKIE, ServerCookieEncoder.LAX.encode(cookies));
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public final class WrappedResponse<S> extends OutputStream {
 	 * Invalidates the current session id, if any is present.
 	 */
 	public void stopSession() {
-		req.getSessionId().ifPresent(c -> sessions.stopSession(c.getValue()));
+		req.getSessionId().ifPresent(c -> sessions.stopSession(c.value()));
 	}
 	
 	/**
