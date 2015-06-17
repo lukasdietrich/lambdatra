@@ -4,6 +4,7 @@ import com.lukasdietrich.lambdatra.routing.Router;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 
@@ -28,6 +29,7 @@ class NettyInitializer extends ChannelInitializer<SocketChannel> {
 		ch.pipeline()
 			.addLast(new HttpServerCodec())
 			.addLast(new HttpObjectAggregator(MAX_BODY_SIZE))
+			.addLast(new HttpContentCompressor())
 			.addLast(new NettyHandler(router));
 	}
 
