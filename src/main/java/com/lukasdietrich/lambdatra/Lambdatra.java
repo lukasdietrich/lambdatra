@@ -138,7 +138,7 @@ public class Lambdatra<S> {
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra<S> onWebSocket(String pattern, WsCallback<S> cb) {
-		this.router.addRoute(new Route<>(pattern, new WsAdapter<>(pattern, cb, sessions)));
+		this.router.addRoute(new Route(pattern, new WsAdapter<>(pattern, cb, sessions)));
 		return this;
 	}
 	
@@ -158,7 +158,7 @@ public class Lambdatra<S> {
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra<S> on(String pattern, HttpCallback<S> cb) {
-		this.router.addRoute(new Route<>(pattern, new HttpAdapter<>(cb, sessions)));
+		this.router.addRoute(new Route(pattern, new HttpAdapter<>(cb, sessions)));
 		return this;
 	}
 	
@@ -173,7 +173,7 @@ public class Lambdatra<S> {
 	 * @return {@link Lambdatra} for chaining
 	 */
 	public Lambdatra<S> use(String pattern, MiddlewareCallback<S> cb) {
-		this.router.addRoute(new Route<>(pattern, new MiddlewareAdapter<>(cb, sessions)));
+		this.router.addRoute(new Route(pattern, new MiddlewareAdapter<>(cb, sessions)));
 		return this;
 	}
 	

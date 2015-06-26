@@ -1,5 +1,11 @@
 package com.lukasdietrich.lambdatra;
 
+import java.io.IOException;
+import java.util.function.BiConsumer;
+
+import com.lukasdietrich.lambdatra.routing.MatchedRoute;
+import com.lukasdietrich.lambdatra.routing.Router;
+
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,14 +15,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-
-import com.lukasdietrich.lambdatra.routing.Route;
-import com.lukasdietrich.lambdatra.routing.Router;
 
 /**
  * Request handler middleware for underlying
@@ -52,8 +50,8 @@ public class NettyHandler extends SimpleChannelInboundHandler<Object> {
 	}
 	
 	private void handleHTTP(ChannelHandlerContext ctx, FullHttpRequest req) throws IOException {
-		for (Entry<Route<?>, Map<String, String>> route : router.findRoute(req.getUri().split("\\?")[0])) {
-			if (route.getKey().getAdapter().call(this, ctx, req, route.getValue()))
+		for (MatchedRoute match : router.findRoute(req.getUri().split("\\?")[0])) {	
+			if (match.getRoute().getAdapter().call(this, ctx, req, match.getParams()))
 				return;
 		}
 		
