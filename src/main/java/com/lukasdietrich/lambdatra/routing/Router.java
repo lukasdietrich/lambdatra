@@ -17,8 +17,8 @@ public class Router {
 		this.routes.add(route);
 	}
 	
-	public Iterator<MatchedRoute> findRoute(String uri) {
-		return new RouteIterator(uri);
+	public Iterable<MatchedRoute> findRoute(String uri) {
+		return () -> new RouteIterator(uri);
 	}
 	
 	private class RouteIterator implements Iterator<MatchedRoute> {
