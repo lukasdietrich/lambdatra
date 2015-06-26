@@ -10,12 +10,11 @@ import com.lukasdietrich.lambdatra.reaction.Adapter;
  * 
  * @author Lukas Dietrich
  *
- * @param <E> class of {@link Adapter} implementation
  */
-public class Route<E extends Adapter> {
+public class Route {
 	
 	private RoutePattern pattern;
-	private E adapter;
+	private Adapter adapter;
 	
 	/**
 	 * Creates a {@link Route} that holds both, 
@@ -24,7 +23,7 @@ public class Route<E extends Adapter> {
 	 * @param pattern url pattern to match requests against
 	 * @param adapter an {@link Adapter} to handle requests on match
 	 */
-	public Route(String pattern, E adapter) {
+	public Route(String pattern, Adapter adapter) {
 		this.pattern = new RoutePattern(pattern);
 		this.adapter = adapter;
 	}
@@ -45,7 +44,7 @@ public class Route<E extends Adapter> {
 	 * 
 	 * @return the underlying adapter
 	 */
-	public E getAdapter() {
+	public Adapter getAdapter() {
 		return this.adapter;
 	}
 	
